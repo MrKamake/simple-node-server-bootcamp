@@ -10,8 +10,20 @@ const { USERS, YOUR_SECRET_KEY } = require('../users');
   - use sign, verify methods in the jsonwebtoken module
 
 */
-function verifyToken (req, res, next) {
+function verifyToken(req, res, next) {
   // Your code here..
+  try {
+    const decoded = jwt.verify(req.headers['vc-client-token'], YOUR_SECRET_KEY);
+    const targetUserId = USERS.findIndex(user => user.id === decoded.id);
+
+    if (targetUserId !== -1) {
+      next();
+    } else {
+      throw new Error();
+    }
+  } catch (err) {
+    res.status(401).json({ error: 'unauthorized' });
+  }
 }
 
 exports.verifyToken = verifyToken;

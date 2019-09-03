@@ -5,7 +5,7 @@ const articles = require('./routes/articles');
 const users = require('./routes/users').router;
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
-mongoose.connect('mongodb://localhost/test', { useNewUrlParser: true });
+mongoose.connect('mongodb://localhost/test', { useNewUrlParser: true, useFindAndModify: false });
 
 var db = mongoose.connection;
 db.on('error', console.error.bind(console, 'connection error:'));

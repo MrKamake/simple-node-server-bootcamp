@@ -388,7 +388,7 @@ describe('With mongoDB database', () => {
   12-1. [MongoDB] Reading an article
 
   */
-  describe.skip('GET /articles', () => {
+  describe('GET /articles', () => {
     beforeEach(fetchAllArticles);
     afterEach(deleteAllArticles);
 
@@ -417,7 +417,7 @@ describe('With mongoDB database', () => {
   12-2. [MongoDB] Creating an article
 
   */
-  describe.skip('POST /articles/new', () => {
+  describe('POST /articles/new', () => {
     beforeEach(fetchAllArticles);
     afterEach(deleteAllArticles);
 
@@ -523,7 +523,7 @@ describe('With mongoDB database', () => {
   12-3. [MongoDB] Updating an article
 
   */
-  describe.skip('PUT /articles/:article_id', () => {
+  describe('PUT /articles/:article_id', () => {
     beforeEach(fetchAllArticles);
     afterEach(deleteAllArticles);
 
@@ -655,7 +655,7 @@ describe('With mongoDB database', () => {
   12-4. [MongoDB] Deleting an article
 
   */
-  describe.skip('DELETE /articles/:article_id', () => {
+  describe('DELETE /articles/:article_id', () => {
     beforeEach(fetchAllArticles);
     afterEach(deleteAllArticles);
 
