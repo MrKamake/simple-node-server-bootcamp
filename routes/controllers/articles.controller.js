@@ -7,6 +7,8 @@ const Article = require('../../models/Article');
 */
 exports.getAll = async function (req, res, next) {
   // Your code here..
+  console.log(req);
+  res.send({});
 };
 
 /*

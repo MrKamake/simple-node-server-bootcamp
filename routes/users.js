@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const jwt = require('jsonwebtoken');
+require('dotenv').config();
 
 const USERS = [
   {
@@ -18,8 +19,7 @@ const USERS = [
 ];
 
 // TODO: Change to your own secret string value and set up as an environment variable
-const YOUR_SECRET_KEY = 'YOUR_SECRET_KEY';
-
+const YOUR_SECRET_KEY = process.env.YOUR_SECRET_KEY;
 // DO NOT MODIFY
 exports.YOUR_SECRET_KEY = YOUR_SECRET_KEY;
 exports.USERS = USERS;
@@ -34,6 +34,7 @@ exports.USERS = USERS;
 */
 router.get('/', (req, res, next) => {
   // Your code here..
+  res.send(USERS);
 });
 
 /*
@@ -43,6 +44,8 @@ router.get('/', (req, res, next) => {
 */
 router.post('/', (req, res, next) => {
   // Your code here..
+  USERS.push(req.body);
+  res.status(201).send(USERS);
 });
 
 /*
@@ -52,6 +55,14 @@ router.post('/', (req, res, next) => {
 */
 router.put('/:user_id', (req, res, next) => {
   // Your code here..
+  const targetUserId = USERS.findIndex(user => user.id === +req.params.user_id);
+
+  if (targetUserId === -1) {
+    res.status(400).send({ error: 'invalid user' });
+  } else {
+    USERS[targetUserId].name = req.body.name;
+    res.send(USERS[targetUserId]);
+  }
 });
 
 /*
@@ -60,7 +71,14 @@ router.put('/:user_id', (req, res, next) => {
 
 */
 router.delete('/:user_id', (req, res, next) => {
-  // Your code here..
+  const targetUserId = USERS.findIndex(user => user.id === +req.params.user_id);
+
+  if (targetUserId === -1) {
+    res.status(400).send({ error: 'invalid user' });
+  } else {
+    USERS.splice(targetUserId, 1);
+    res.send({ result: 'ok' });
+  }
 });
 
 /*
@@ -70,6 +88,16 @@ router.delete('/:user_id', (req, res, next) => {
 */
 router.get('/:user_id/token', (req, res, next) => {
   // Your code here..
+  const targetUserId = USERS.findIndex(user => user.id === +req.params.user_id);
+
+  if (targetUserId === -1) {
+    res.status(400).send({ error: 'invalid user' });
+  } else {
+    res.send({
+      result: 'ok',
+      token: jwt.sign(USERS[targetUserId], YOUR_SECRET_KEY)
+    });
+  }
 });
 
 /*
@@ -79,6 +107,14 @@ router.get('/:user_id/token', (req, res, next) => {
 */
 router.get('/:user_id/secret', (req, res, next) => {
   // Your code here..
+  const targetUserId = USERS.findIndex(user => user.id === +req.params.user_id);
+  const userToken = jwt.sign(USERS[targetUserId], YOUR_SECRET_KEY);
+
+  if (userToken !== req.get('VC-CLIENT-TOKEN')) {
+    res.status(401).send({ error: 'unauthorized' });
+  } else {
+    res.send({ result: 'ok', secret: 'i am secret something' });
+  }
 });
 
 exports.router = router;
