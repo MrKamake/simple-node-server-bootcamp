@@ -13,10 +13,10 @@ const { USERS, YOUR_SECRET_KEY } = require('../users');
 function verifyToken(req, res, next) {
   // Your code here..
   try {
-    const decoded = jwt.verify(req.headers['vc-client-token'], YOUR_SECRET_KEY);
-    const targetUserId = USERS.findIndex(user => user.id === decoded.id);
+    const token = req.get('VC-CLIENT-TOKEN');
+    const user = jwt.verify(token, YOUR_SECRET_KEY);
 
-    if (targetUserId !== -1) {
+    if (user) {
       next();
     } else {
       throw new Error();

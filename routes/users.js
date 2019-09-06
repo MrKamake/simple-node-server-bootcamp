@@ -45,6 +45,7 @@ router.get('/', (req, res, next) => {
 router.post('/', (req, res, next) => {
   // Your code here..
   USERS.push(req.body);
+
   res.status(201).send(USERS);
 });
 
@@ -61,6 +62,7 @@ router.put('/:user_id', (req, res, next) => {
     res.status(400).send({ error: 'invalid user' });
   } else {
     USERS[targetUserId].name = req.body.name;
+
     res.send(USERS[targetUserId]);
   }
 });
@@ -77,6 +79,7 @@ router.delete('/:user_id', (req, res, next) => {
     res.status(400).send({ error: 'invalid user' });
   } else {
     USERS.splice(targetUserId, 1);
+
     res.send({ result: 'ok' });
   }
 });
@@ -88,15 +91,15 @@ router.delete('/:user_id', (req, res, next) => {
 */
 router.get('/:user_id/token', (req, res, next) => {
   // Your code here..
-  const targetUserId = USERS.findIndex(user => user.id === +req.params.user_id);
+  const user = USERS.find(user => user.id === +req.params.user_id);
 
-  if (targetUserId === -1) {
-    res.status(400).send({ error: 'invalid user' });
-  } else {
+  if (user) {
     res.send({
       result: 'ok',
-      token: jwt.sign(USERS[targetUserId], YOUR_SECRET_KEY)
+      token: jwt.sign(user, YOUR_SECRET_KEY)
     });
+  } else {
+    res.status(400).send({ error: 'invalid user' });
   }
 });
 
@@ -107,10 +110,11 @@ router.get('/:user_id/token', (req, res, next) => {
 */
 router.get('/:user_id/secret', (req, res, next) => {
   // Your code here..
-  const targetUserId = USERS.findIndex(user => user.id === +req.params.user_id);
-  const userToken = jwt.sign(USERS[targetUserId], YOUR_SECRET_KEY);
-
-  if (userToken !== req.get('VC-CLIENT-TOKEN')) {
+  const user = USERS.find(user => user.id === +req.params.user_id);
+  const userToken = jwt.sign(user, YOUR_SECRET_KEY);
+  const requestToken = req.get('VC-CLIENT-TOKEN');
+  
+  if (userToken !== requestToken) {
     res.status(401).send({ error: 'unauthorized' });
   } else {
     res.send({ result: 'ok', secret: 'i am secret something' });

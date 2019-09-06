@@ -5,14 +5,15 @@ const Article = require('../../models/Article');
   TODO: GET /articles
 
 */
-exports.getAll = async function (req, res, next) {
+exports.getAll = async function(req, res, next) {
   // Your code here..
   try {
-    const userFromDb = await Article.find();
+    const articles = await Article.find();
 
-    res.send({ articles: userFromDb });
+    res.json({ articles });
   } catch (err) {
     next();
+    res.status(500).json({ errMessage: 'Error' });
   }
 };
 
@@ -21,13 +22,12 @@ exports.getAll = async function (req, res, next) {
   TODO: POST /articles/new
 
 */
-exports.create = async function (req, res, next) {
+exports.create = async function(req, res, next) {
   // Your code here..
   const newArticle = new Article(req.body);
-  console.log(newArticle);
-  newArticle.save();
+  await newArticle.save();
 
-  res.status(201).send({ result: 'ok', article: newArticle });
+  res.status(201).json({ result: 'ok', article: newArticle });
 };
 
 /*
@@ -35,16 +35,17 @@ exports.create = async function (req, res, next) {
   TODO: PUT /articles/:article_id
 
 */
-exports.update = async function (req, res, next) {
+exports.update = async function(req, res, next) {
   // Your code here..
   try {
     const updatedArticle = await Article.findByIdAndUpdate(
       req.params.article_id,
       req.body
     );
-    res.send({ result: 'ok', article: updatedArticle });
+
+    res.json({ result: 'ok', article: updatedArticle });
   } catch (err) {
-    res.status(400).send({ error: 'invalid article id' });
+    res.status(400).json({ error: 'invalid article id' });
   }
 };
 
@@ -53,12 +54,13 @@ exports.update = async function (req, res, next) {
   TODO: DELETE /articles/:article_id
 
 */
-exports.delete = async function (req, res, next) {
+exports.delete = async function(req, res, next) {
   // Your code here..
   try {
     await Article.findByIdAndDelete(req.params.article_id);
-    res.send({ result: 'ok' });
+
+    res.json({ result: 'ok' });
   } catch (err) {
-    res.status(400).send({ error: 'invalid article id' });
+    res.status(400).json({ error: 'invalid article id' });
   }
 };

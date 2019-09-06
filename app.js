@@ -5,12 +5,15 @@ const articles = require('./routes/articles');
 const users = require('./routes/users').router;
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
-mongoose.connect('mongodb://localhost/test', { useNewUrlParser: true, useFindAndModify: false });
+mongoose.connect('mongodb://localhost/test', {
+  useNewUrlParser: true,
+  useFindAndModify: false
+});
 
 var db = mongoose.connection;
 db.on('error', console.error.bind(console, 'connection error:'));
 db.once('open', function() {
-  console.log("Connect MongoDB")
+  console.log('Connect MongoDB');
 });
 
 const app = express();
@@ -26,13 +29,12 @@ app.set('view engine', 'ejs');
  */
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
+app.use(express.static('public'));
+
 app.use('/', index);
 app.use('/articles', articles);
 app.use('/users', users);
-app.use(express.static('public'));
-app.use(function(req, res, next) {
-  res.status(404).send('404');
-});
+app.use((req, res, next) => res.status(404).send('404'));
 
 // [ DO NOT MODIFY ]: error handler
 // https://expressjs.com/en/guide/error-handling.html
